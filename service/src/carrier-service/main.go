@@ -1,10 +1,12 @@
 package main
 
 import (
+	"carrier-service/api/middleware"
+	"carrier-service/api/router"
 	"carrier-service/database"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"os"
 )
 
 func main() {
@@ -13,25 +15,20 @@ func main() {
 		log.Fatal(err)
 	}
 
-	defer func() {
-		if err := conn.Close(); err != nil {
-			log.Fatal(fmt.Sprintf("Failed to close: %v", err))
-		}
-	}()
-	env := NewEnvironment(conn)
-	handler := env.NewAppHandler()
-
-	router.NewRouter(env, handler)
-	middleware.NewMiddleware(e)
-	if err := e.Start(fmt.Sprintf(":%d", conf.Current.Server.Port)); err != nil {
-		e.Logger.Fatal(fmt.Sprintf("Failed to start: %v", err))
-	}
-
 	app := fiber.New()
 
-	app.Use(middleware.Logger())
+	env := NewEnvironment(conn)
 
-	router.SetupRoutes(app)
+	middleware.FiberMiddleware(app)
+	handler := env.NewAppHandler()
+	router.NewRouter(app, handler)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "localhost:8080"
+	}
+	err = app.Listen(port)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	app.Listen(3000)
 }

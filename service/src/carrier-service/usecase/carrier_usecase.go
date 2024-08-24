@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"carrier-service/domain/model"
+	"carrier-service/domain/repository"
 	"context"
 )
 
@@ -12,10 +14,10 @@ type carrierUseCase struct {
 	repository.CarrierRepository
 }
 
-func NewCarrierUseCase(r repository.CarrierRepository) CarrierUseCase {
+func NewCarrierUseCase(r repository.CarrierRepository) *carrierUseCase {
 	return &carrierUseCase{r}
 }
 
-func (c *carrierUseCase) GetUser(ctx context.Context, id int) (*model.Carrier, error) {
+func (c *carrierUseCase) GetCarrier(ctx context.Context, id int) (*model.Carrier, error) {
 	return c.CarrierRepository.FetchByID(ctx, id)
 }

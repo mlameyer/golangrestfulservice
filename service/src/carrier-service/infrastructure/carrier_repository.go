@@ -1,30 +1,27 @@
 package infrastructure
 
 import (
-	"database/sql"
-	"github.com/gofiber/fiber/v2"
+	"carrier-service/domain/model"
+	"carrier-service/domain/repository"
+	"context"
+	"gorm.io/gorm"
 )
 
 type carrierRepository struct {
-	Conn *sql.DB
+	Conn *gorm.DB
 }
 
-func NewCarrierRepository(Conn *sql.DB) repository.carrierRepository {
+func NewCarrierRepository(Conn *gorm.DB) repository.CarrierRepository {
 	return &carrierRepository{Conn}
 }
 
-func (r *carrierRepository) FetchByID(ctx fiber.Ctx, id int) (*model.Carrier, error) {
+func (r *carrierRepository) FetchByID(ctx context.Context, id int) (*model.Carrier, error) {
 	u := &model.Carrier{ID: id}
-	rows, err := r.Conn.Query("SELECT * FROM carrier")
-	if err != nil {
-		return nil, err
-	}
-	for rows.Next() {
-		err := rows.Scan(u)
-		if err != nil {
-			return nil, err
-		}
+	result := r.Conn.First(u, id)
+
+	for result.Error != nil {
+		return nil, result.Error
 	}
 
-	return u, err
+	return u, nil
 }
