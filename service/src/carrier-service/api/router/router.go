@@ -10,5 +10,10 @@ import (
 func NewRouter(app *fiber.App, h handler.AppHandler) {
 	api := app.Group("/api", logger.New())
 	api.Post("/authenticate", h.Authenticate)
-	api.Get("/:id", middleware.JWTProtected(), h.GetCarrier)
+
+	api.Get("/carriers/:id", middleware.JWTProtected(), h.GetCarrier)
+	api.Post("/carriers", middleware.JWTProtected(), h.CreateCarrier)
+	api.Put("/carriers/:id/address", middleware.JWTProtected(), h.UpdateCarrierAddress)
+	api.Put("/carriers/:id/active", middleware.JWTProtected(), h.UpdateCarrierActiveStatus)
+	api.Delete("/carriers/:id", middleware.JWTProtected(), h.DeleteCarrier)
 }

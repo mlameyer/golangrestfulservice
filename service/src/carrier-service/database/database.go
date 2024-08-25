@@ -6,7 +6,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"time"
 )
 
 func NewConnection() (*gorm.DB, error) {
@@ -40,13 +39,6 @@ func initializeDB() (*gorm.DB, error) {
 		log.Fatal(err)
 		return nil, err
 	}
-
-	db.Create(&model.Carrier{
-		Name:      "test carrier",
-		InService: true,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	})
 
 	return db, nil
 }

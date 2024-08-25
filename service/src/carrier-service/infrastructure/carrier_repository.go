@@ -5,6 +5,7 @@ import (
 	"carrier-service/domain/repository"
 	"context"
 	"gorm.io/gorm"
+	"sync"
 )
 
 type carrierRepository struct {
@@ -24,4 +25,28 @@ func (r *carrierRepository) FetchByID(ctx context.Context, id int) (*model.Carri
 	}
 
 	return u, nil
+}
+
+func (r *carrierRepository) Create(ctx context.Context, carrier *model.Carrier, err chan<- error, wg *sync.WaitGroup) {
+	result := r.Conn.Create(carrier)
+	if result.Error != nil {
+		err <- result.Error
+	}
+	wg.Done()
+}
+
+func (r *carrierRepository) Update(ctx context.Context, carrier *model.Carrier) error {
+	result := r.Conn.Save(carrier)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (r *carrierRepository) Delete(ctx context.Context, carrier *model.Carrier) error {
+	result := r.Conn.Delete(carrier)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
