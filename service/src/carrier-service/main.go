@@ -24,7 +24,7 @@ func main() {
 	router.NewRouter(app, handler)
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "localhost:8080"
+		port = ":8080"
 	}
 	err = app.Listen(port)
 	if err != nil {

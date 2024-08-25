@@ -12,22 +12,8 @@ func NewConnection() (*gorm.DB, error) {
 	return initializeDB()
 }
 
-//func getPostgreSqlConn() (*sql.DB, error) {
-//	connStr := "postgresql://postgres:mysecretpassword@localhost:2022/carrierdb?sslmode=disable"
-//	db, err := sql.Open("postgres", connStr)
-//	if err != nil {
-//		log.Fatal(err)
-//		return nil, err
-//	}
-//	if err = db.Ping(); err != nil {
-//		return nil, err
-//	}
-//	CreateCarrierTable(db)
-//	return db, nil
-//}
-
 func initializeDB() (*gorm.DB, error) {
-	connStr := "postgresql://postgres:mysecretpassword@localhost:2022?sslmode=disable"
+	connStr := "host=carrierdb port=5432 user=postgres password=mysecretpassword dbname=postgres sslmode=disable"
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -42,13 +28,3 @@ func initializeDB() (*gorm.DB, error) {
 
 	return db, nil
 }
-
-//func CreateCarrierTable(db *sql.DB) {
-//	db.Query(`CREATE TABLE IF NOT EXISTS carriers (
-//    id SERIAL PRIMARY KEY,
-//    name VARCHAR(255) NOT NULL,
-//    in_service BIT NOT NULL,
-//    created_at TIMESTAMP NOT NULL,
-//    updated_at TIMESTAMP NOT NULL,
-//)`)
-//}
