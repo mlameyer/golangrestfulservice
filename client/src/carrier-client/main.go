@@ -70,7 +70,7 @@ type ErrorResponse struct {
 }
 
 func init() {
-	flag.StringVar(&function, "f", "get", "function")
+	flag.StringVar(&function, "f", "", "function")
 	flag.StringVar(&user, "u", "jack", "user")
 	flag.StringVar(&password, "p", "burton", "password")
 	flag.IntVar(&id, "i", 0, "id")
@@ -85,6 +85,7 @@ func init() {
 func main() {
 	if isFlagPassed(help) || flag.NFlag() == 0 {
 		printCLIHelpMenu()
+		return
 	}
 
 	token := readTokenFromFile()

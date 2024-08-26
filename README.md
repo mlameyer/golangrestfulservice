@@ -15,7 +15,7 @@ An example of a restful service written in golang using Domain driven design and
 ## Getting started
 
 ### carrier-service api
-In order to run the carrier-service api you must have docker installed locally on your machine to install and run PostgreSql. 
+In order to run the carrier-service api you must have docker installed locally on your machine to install and run PostgreSql image. 
 As an option. You can also build and run the carrier-service api in docker, but it is not required. You can choose to run the
 service locally and use Postman or curl to interact with the service.  
 
@@ -70,7 +70,7 @@ carrier-service api running in a docker container or running locally in an ide
 
 
 
-
+## Docker
 - ```docker run --rm -d --name carrierdb --network dev-network -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=mysecretpassword -e postgres -p 5432:5432  postgres```
 - ```docker run --rm -d --name carrierapi --network dev-network -p 8080:8080 carrierapi```
 - ```docker build -t carrierapi .```
