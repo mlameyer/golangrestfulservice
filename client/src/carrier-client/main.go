@@ -70,25 +70,21 @@ type ErrorResponse struct {
 }
 
 func init() {
-	flag.StringVar(&function, "f", "", "function")
-	flag.StringVar(&user, "u", "", "user")
-	flag.StringVar(&password, "p", "", "password")
+	flag.StringVar(&function, "f", "get", "function")
+	flag.StringVar(&user, "u", "jack", "user")
+	flag.StringVar(&password, "p", "burton", "password")
 	flag.IntVar(&id, "i", 0, "id")
-	flag.StringVar(&carriername, "cn", "", "carriername")
-	flag.StringVar(&address, "add", "", "address")
-	flag.StringVar(&active, "act", "", "active")
-	flag.StringVar(&help, "help", "", "help")
+	flag.StringVar(&carriername, "cn", "Pork Chop Express", "carriername")
+	flag.StringVar(&address, "add", "1234 Chinatown, San Francisco, 90210", "address")
+	flag.StringVar(&active, "act", "true", "active")
+	flag.StringVar(&help, "help", "help", "help")
 
 	flag.Parse()
 }
 
 func main() {
-	fmt.Printf("carrier, %s!\n", carriername)
-	fmt.Printf("address, %s!\n", address)
-	fmt.Printf("active, %s!\n", active)
 	if isFlagPassed(help) || flag.NFlag() == 0 {
 		printCLIHelpMenu()
-		return
 	}
 
 	token := readTokenFromFile()
@@ -166,8 +162,9 @@ func printCLIHelpMenu() {
 	b.WriteString("You must provide -u user and -p password on the authentication command to retrieve a token for all other function commands.\n")
 	b.WriteString("See the list of argument values below:\n\n")
 	fmt.Printf(b.String())
-	//fmt.Fprintf(&b, "Usage: %s [OPTIONS]\n", os.Args[0])
+
 	flag.Usage()
+
 }
 
 func deleteCarrier(i int, t string) {
