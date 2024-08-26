@@ -17,11 +17,15 @@ type Carrier struct {
 }
 
 func (c *Carrier) NewCarrier(name string, address string, active bool) error {
+	if len(name) == 0 {
+		return errors.New("carrier name is empty")
+	}
+
 	if active != true {
 		return errors.New("carrier is not active")
 	}
 
-	if address == "" {
+	if len(address) == 0 {
 		return errors.New("carrier address is empty")
 	}
 
