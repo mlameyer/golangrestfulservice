@@ -116,6 +116,12 @@ func (h *carrierHandler) CreateCarrier(c *fiber.Ctx) error {
 		carrierDto.Address,
 		carrierDto.Active,
 	)
+	if err != nil {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"success": false,
+			"message": err,
+		})
+	}
 
 	ctx := c.Context()
 
@@ -263,7 +269,7 @@ func (h *carrierHandler) UpdateCarrierActiveStatus(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"success": true,
-		"message": "Successfully fetched carrier",
+		"message": "Successfully updated carrier active status",
 	})
 }
 

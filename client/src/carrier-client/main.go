@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -19,7 +21,7 @@ var id int
 var carriername string
 var address string
 var active string
-var token string
+var help string
 
 type Auth struct {
 	Token string `json:"token"`
@@ -75,13 +77,22 @@ func init() {
 	flag.StringVar(&carriername, "cn", "", "carriername")
 	flag.StringVar(&address, "add", "", "address")
 	flag.StringVar(&active, "act", "", "active")
-	flag.StringVar(&token, "t", "", "token")
+	flag.StringVar(&help, "help", "", "help")
 
 	flag.Parse()
 }
 
 func main() {
-	deleteCarrier(6, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQ2Mjk4NTcsIm5hbWUiOiJKYWNrIEJ1cnRvbiJ9.cRFZFvGn4ezhTvsPJfjR782Ox99oQT60NnN818e02OA")
+	fmt.Printf("carrier, %s!\n", carriername)
+	fmt.Printf("address, %s!\n", address)
+	fmt.Printf("active, %s!\n", active)
+	if isFlagPassed(help) || flag.NFlag() == 0 {
+		printCLIHelpMenu()
+		return
+	}
+
+	token := readTokenFromFile()
+
 	switch functionToExecute := function; functionToExecute {
 	case "authenticate":
 		if user == "" || password == "" {
@@ -136,6 +147,27 @@ func main() {
 	default:
 		panic(errors.New("Must provide a function to execute. choices: authenticate, get, create, update, delete"))
 	}
+}
+
+func readTokenFromFile() string {
+	data, err := os.ReadFile("token.data")
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(data)
+}
+
+func printCLIHelpMenu() {
+	var b strings.Builder
+	b.WriteString("Welcome to the carrier cli. Please read the instructions.\n")
+	b.WriteString("To issue a command provide the -f function desired and the required arguments.\n")
+	b.WriteString("The functions provided by this cli are authenticate, get, create, update, delete.\n\n")
+	b.WriteString("All functions require you to be authenticated except for the function authentication.\n")
+	b.WriteString("You must provide -u user and -p password on the authentication command to retrieve a token for all other function commands.\n")
+	b.WriteString("See the list of argument values below:\n\n")
+	fmt.Printf(b.String())
+	//fmt.Fprintf(&b, "Usage: %s [OPTIONS]\n", os.Args[0])
+	flag.Usage()
 }
 
 func deleteCarrier(i int, t string) {
@@ -384,4 +416,21 @@ func getToken(user string, password string) {
 		panic(err)
 	}
 	fmt.Printf("bearer token: %s\n", auth.Token)
+
+	mydata := []byte(auth.Token)
+	err = os.WriteFile("token.data", mydata, 0600)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func isFlagPassed(name string) bool {
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }
