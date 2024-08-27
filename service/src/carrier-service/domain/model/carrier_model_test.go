@@ -46,6 +46,22 @@ func TestCarrier_Successful(t *testing.T) {
 
 func TestCarrier_Error(t *testing.T) {
 	t.Run("create new carrier fail", func(t *testing.T) {
+		tests := map[string]struct {
+			name          string
+			address       string
+			active        bool
+			expectedError string
+		}{
+			"empty name":      {"", "test", true, "carrier name is empty"},
+			"empty address":   {"test", "", true, "carrier address is empty"},
+			"active is false": {"test", "test", false, "carrier is not active"},
+		}
+
+		for _, tc := range tests {
+			got := Carrier{}
+			err := got.NewCarrier(tc.name, tc.address, tc.active)
+			require.EqualError(t, err, tc.expectedError)
+		}
 
 	})
 
